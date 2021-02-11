@@ -8,6 +8,7 @@ import com.kafka.example.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,8 +62,8 @@ public class KafkaController {
         user.setName(name);
         user.setAge(age);
         try {
-            User newUser = this.userService.addUser(user);
-            res.setData(newUser);
+            this.producerService.postUser(user);
+            res.setData(user);
 
         }catch (Exception e){
             logger.error("An error occurred! {}", e.getMessage());

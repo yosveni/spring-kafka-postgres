@@ -8,29 +8,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Component
-@Transactional
+@Service
 public class KafKaConsumerService {
 
     private final Logger logger = LoggerFactory.getLogger(KafKaConsumerService.class);
 
-
     @Autowired
     UserService userService;
 
-    @KafkaListener(topics = "${general.topic.name}",
-                    groupId = "${general.topic.group.id}")
-    public void consume(String message){
-        logger.info(String.format("Message recieved -> %s", message));
-    }
-
-
     @KafkaListener(topics = "${user.topic.name}",
-            groupId = "${user.topic.group.id}")
+            groupId = "${user.topic.group.id}",
+            containerFactory = "userKafkaListenerContainerFactory")
     public void processUser(User user){
+        logger.info("Received content = '{}'", user);
         try{
             User newUser = this.userService.addUser(user);
             logger.info(String.format("User created -> %s", newUser));

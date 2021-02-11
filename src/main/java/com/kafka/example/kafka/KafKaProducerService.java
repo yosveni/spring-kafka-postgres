@@ -1,6 +1,7 @@
 package com.kafka.example.kafka;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kafka.example.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,18 @@ public class KafKaProducerService {
             }
         });
 
+    }
+
+    public void postUser(User user){
+        try {
+            logger.info("Sending data to kafka = '{}' with topic '{}'", user.getName(), userTopicName);
+//            ObjectMapper mapper = new ObjectMapper();
+            userKafkaTemplate.send(userTopicName, user);
+
+        }catch (Exception ex){
+            logger.error("An error occurred! '{}'", ex.getMessage());
+
+        }
     }
 
 
